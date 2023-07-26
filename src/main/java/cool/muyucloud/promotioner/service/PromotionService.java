@@ -13,7 +13,7 @@ import java.util.List;
 public interface PromotionService {
     List<Promotion> vagueSearch(String name, Integer category, String creator, Date start, Date end);
 
-    Promotion queryById(Integer id);
+    Promotion queryById(String id);
 
     boolean createPromotion(
         String creator,
@@ -24,7 +24,7 @@ public interface PromotionService {
         Date end
     );
 
-    boolean primaryApprove(Integer id, Integer approver);
+    boolean primaryApprove(String id, String approver);
 
-    boolean secondaryApprove(Integer id, Integer approver);
+    boolean secondaryApprove(String id, String approver);
 }

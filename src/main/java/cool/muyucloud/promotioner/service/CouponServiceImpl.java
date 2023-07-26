@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,7 +24,7 @@ public class CouponServiceImpl implements CouponService {
     private CouponDao couponDao;
 
     @Override
-    public void add(String name, Double value, Integer promotionId, Date start, Date end) {
+    public void add(String name, Double value, String promotionId, Date start, Date end) {
         if (ObjectUtil.anyNull(name, value, promotionId, start, end)) {
             return;
         }
@@ -38,9 +40,9 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public boolean use(Long id) {
+    public boolean use(String id) {
         Optional<Coupon> optionalCoupon = couponDao.findById(id);
-        if (optionalCoupon.isEmpty()) {
+        if (!optionalCoupon.isPresent()) {
             return false;
         }
         Coupon coupon = optionalCoupon.get();
@@ -53,9 +55,19 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
-    private boolean validatePromotion(Integer promotionId, Date start, Date end) {
+    @Override
+    public List<Coupon> get(String promotionId, int count) {
+        List<Coupon> coupons = couponDao.get(promotionId, count);
+        if (coupons.size() != count) {
+            return null;
+        } else {
+            return coupons;
+        }
+    }
+
+    private boolean validatePromotion(String promotionId, Date start, Date end) {
         Optional<Promotion> optionalPromotion = promotionDao.findById(promotionId);
-        if (optionalPromotion.isEmpty()) {
+        if (!optionalPromotion.isPresent()) {
             return false;
         }
         Promotion promotion = optionalPromotion.get();

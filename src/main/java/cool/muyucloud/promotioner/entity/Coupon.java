@@ -1,7 +1,6 @@
 package cool.muyucloud.promotioner.entity;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.sql.Date;
 
 /**
@@ -12,7 +11,7 @@ import java.sql.Date;
 public class Coupon {
     @Id
     @Column
-    private Long id;
+    private String id;
     @Column
     private String name;
     @ManyToOne
@@ -27,11 +26,11 @@ public class Coupon {
     @Column
     private Boolean used;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

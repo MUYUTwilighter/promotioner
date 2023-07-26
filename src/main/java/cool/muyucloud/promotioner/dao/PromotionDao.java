@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author MUYU_Twilighter
  */
-public interface PromotionDao extends JpaRepository<Promotion, Integer> {
+public interface PromotionDao extends JpaRepository<Promotion, String> {
     @Query(nativeQuery = true,
         value = "select * from promotion " +
             "where (name like ?1 or ?1 is NULL) " +

@@ -1,7 +1,6 @@
 package cool.muyucloud.promotioner.entity;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
 
@@ -13,31 +12,32 @@ import java.util.List;
 public class Promotion {
     @Id
     @Column
-    private Integer id;
+    private String id;
     @Column
     private String name;
     @Column
     private Integer category;
     @Column
     private String business;
-    @Column
-    private String creator;
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private User creator;
     @Column
     private Date start;
     @Column
     private Date end;
     @Column
-    private Integer primaryApprover;
+    private String primaryApprover;
     @Column
-    private Integer secondaryApprover;
+    private String secondaryApprover;
     @OneToMany(mappedBy = "promotion")
     private List<Coupon> couponList;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -66,11 +66,11 @@ public class Promotion {
     }
 
     public String getCreator() {
-        return creator;
+        return creator.getId();
     }
 
     public void setCreator(String creator) {
-        this.creator = creator;
+        this.creator.setId(creator);
     }
 
     public Date getStart() {
@@ -89,19 +89,19 @@ public class Promotion {
         this.end = end;
     }
 
-    public Integer getPrimaryApprover() {
+    public String getPrimaryApprover() {
         return primaryApprover;
     }
 
-    public void setPrimaryApprover(Integer primaryApprover) {
+    public void setPrimaryApprover(String primaryApprover) {
         this.primaryApprover = primaryApprover;
     }
 
-    public Integer getSecondaryApprover() {
+    public String getSecondaryApprover() {
         return secondaryApprover;
     }
 
-    public void setSecondaryApprover(Integer secondaryApprover) {
+    public void setSecondaryApprover(String secondaryApprover) {
         this.secondaryApprover = secondaryApprover;
     }
 }

@@ -34,6 +34,13 @@ Arguments:
 - `Date start` time duration begin-point, filter promotions ends before this point of time
 - `Date end` time duration end-point, filter promotions start after this point of time
 
+Returns:
+- `List<Promotion> promotions` promotions that matches input conditions
+
+Example:
+
+
+
 ### Promotion management
 
 #### `/promotion/create` <span id="promotion_create"><span/>

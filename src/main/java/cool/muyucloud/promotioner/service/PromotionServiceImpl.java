@@ -23,8 +23,8 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public Promotion queryById(Integer id) {
-        return promotionDao.getReferenceById(id);
+    public Promotion queryById(String id) {
+        return promotionDao.findById(id).orElse(null);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public boolean primaryApprove(Integer id, Integer approver) {
+    public boolean primaryApprove(String id, String approver) {
         Promotion promotion = promotionDao.getReferenceById(id);
         if (promotion.getPrimaryApprover() == null) {
             promotion.setPrimaryApprover(approver);
@@ -63,7 +63,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public boolean secondaryApprove(Integer id, Integer approver) {
+    public boolean secondaryApprove(String id, String approver) {
         Promotion promotion = promotionDao.getReferenceById(id);
         if (promotion.getPrimaryApprover() != null &&
             promotion.getSecondaryApprover() == null) {
