@@ -4,7 +4,7 @@ import cool.muyucloud.promotioner.entity.Promotion;
 import cool.muyucloud.promotioner.entity.User;
 import cool.muyucloud.promotioner.service.PromotionService;
 import cool.muyucloud.promotioner.service.UserService;
-import cool.muyucloud.promotioner.util.AuthoriseUtil;
+import cool.muyucloud.promotioner.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +23,11 @@ public class PromotionController {
     @Autowired
     private UserService userService;
     @Autowired
-    private AuthoriseUtil authoriseUtil;
+    private AuthUtil authoriseUtil;
 
     @GetMapping("/search/id")
     @ResponseBody
-    public Promotion searchId(@RequestParam(value = "id") String id) {
+    public Promotion searchId(@RequestParam(value = "id") Long id) {
         return promotionService.queryById(id);
     }
 
@@ -45,7 +45,6 @@ public class PromotionController {
     @PostMapping("/create")
     public Boolean createPromotion(
         @RequestParam(value = "token") String token,
-        @RequestParam(value = "creator") String creator,
         @RequestParam(value = "name") String name,
         @RequestParam(value = "category") Integer category,
         @RequestParam(value = "business") String business,
@@ -54,41 +53,41 @@ public class PromotionController {
         if (!authoriseUtil.exists(token)) {
             return false;
         }
-        String uid = authoriseUtil.get(token);
+        Long uid = authoriseUtil.get(token);
         User user = userService.query(uid);
         if (!user.isStaff()) {
             return false;
         }
-        return promotionService.createPromotion(creator, name, category, business, start, end);
+        return promotionService.createPromotion(user.getUid(), name, category, business, start, end);
     }
 
     @PutMapping("/approve/primary")
     public Boolean primaryApprove(
         @RequestParam(value = "token") String token,
-        @RequestParam(value = "promotionId") String promotionId) {
+        @RequestParam(value = "pid") Long pid) {
         if (!authoriseUtil.exists(token)) {
             return false;
         }
-        String uid = authoriseUtil.get(token);
+        Long uid = authoriseUtil.get(token);
         User user = userService.query(uid);
         if (!user.isPrimaryStaff()) {
             return false;
         }
-        return promotionService.primaryApprove(promotionId, user.getUid());
+        return promotionService.primaryApprove(pid, user);
     }
 
     @PutMapping("/approve/secondary")
     public Boolean secondaryApprove(
         @RequestParam(value = "token") String token,
-        @RequestParam(value = "promotionId") String id) {
+        @RequestParam(value = "pid") Long pid) {
         if (!authoriseUtil.exists(token)) {
             return false;
         }
-        String uid = authoriseUtil.get(token);
+        Long uid = authoriseUtil.get(token);
         User user = userService.query(uid);
         if (!user.isSecondaryStaff()) {
             return false;
         }
-        return promotionService.secondaryApprove(id, user.getUid());
+        return promotionService.secondaryApprove(pid, user);
     }
 }

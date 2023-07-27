@@ -19,7 +19,7 @@ All the promotion with their status and properties.
 Columns:
 
 - `pid` Promotion ID
-- `name` Name of the promotion
+- `promotion_name` Name of the promotion
 - `business` Business that the promotion belongs to
 - `category` Category of the promotion, `DAILY=0` for daily promotion, `LARGE=1` for large promotion
 - `uid` Creator's UID
@@ -35,8 +35,9 @@ Columns:
 Coupon from all promotions
 
 Columns:
+
 - `cid` Coupon ID
-- `name` Name of the coupon
+- `coupon_name` Name of the coupon
 - `promotion` Promotion that the coupon belongs to
 - `used` Whether the coupon is used
 - `value` Value of the coupon
@@ -52,7 +53,7 @@ Users that may interact with promotion management, this table is used for authen
 Columns:
 
 - `uid` User ID
-- `name` User name
+- `user_name` User name
 - `auth` Authentication level
 - `pwd` User's password
 
@@ -80,7 +81,8 @@ Search a specific promotion via promotion's id, return null if not found
 Require authentication level: `ANY`
 
 Arguments:
-- `Integer id` id of the promotion
+
+- `Long id` id of the promotion
 
 Returns:
 
@@ -90,9 +92,7 @@ Example:
 
 > Input: `http://SERVER/promotion/search/id?id="0"`
 >
-> Returns: ```{"pid": "0", "name": "testA", "business": "test", "category": 0,
-> "creator": "test_staff", "primary_approver": "test_primary", "secondary_approver": "test_secondary",
-> "start": "2022-1-1", "end": "2023-1-1"}```
+> Returns: ```{"pid":0,"pName":"testA","category":0,"business":"test","uid":0,"startDate":"2022-1-1","endDate":"2023-1-1","primaryApprover":0,"secondaryApprover":0}```
 
 ---
 
@@ -103,6 +103,7 @@ Search a list of promotions via their details, return a list
 Require authentication level: `ANY`
 
 Arguments:
+
 - `String name` name of the promotions, support vague search(following SQL string format)
 - `Integer category` category of the promotion, `DAILY=0`, `LARGE=1`
 - `String creator` creator of the promotion, support vague search(following SQL string format)
@@ -116,10 +117,8 @@ Returns:
 Example:
 
 > Input: `http://SERVER/promotion/search/vague?name=%25test%25&category=0&creator=%25&start=1970-1-1&end=2100-1-1`
-> 
-> Returns: ```[{"pid": 0, "name": "testA", "business": "test", "category": 0,
-> "creator": "test_staff", "primary_approver": "test_primary", "secondary_approver": "test_secondary",
-> "start": "2022-1-1", "end": "2023-1-1"}]```
+>
+> Returns: ```[{"pid":0,"pName":"testA","category":0,"business":"test","uid":0,"startDate":"2022-1-1","endDate":"2023-1-1","primaryApprover":0,"secondaryApprover":0}]```
 
 ---
 
@@ -134,8 +133,8 @@ Create a promotion with necessary information
 Require authentication level: `STAFF`
 
 Arguments:
+
 - `String token` token of current session, used for authentication
-- `String creator` creator's name of the promotion
 - `String name` name of the promotion
 - `Integer category` category of the promotion, `DAILY=0`, `LARGE=1`
 - `String business` business where the promotion belongs to
@@ -148,7 +147,7 @@ Returns:
 
 Example:
 
-> Input: `http://SERVER/promotion/create?token=testToken&creator=test_staff&name=testB&category=0&business=test&start=2023-8-1&end=2023-11-11`
+> Input: `http://SERVER/promotion/create?token=testToken&name=testB&category=0&business=test&start=2023-8-1&end=2023-11-11`
 > 
 > Returns: `true`
 
@@ -161,8 +160,9 @@ Primary approval of a promotion
 Require authentication level: `PRIMARY_STAFF`
 
 Arguments:
+
 - `String token` token of current session, used for authentication
-- `String promotionId` ID of the promotion
+- `Long pid` ID of the promotion
 
 Returns:
 
@@ -170,7 +170,7 @@ Returns:
 
 Example:
 
-> Input: `http://SERVER/promotion/approve/primary?token=testToken&id=0`
+> Input: `http://SERVER/promotion/approve/primary?token=testToken&pid=0`
 >
 > Returns: `true`
 
@@ -183,8 +183,9 @@ Secondary approval of a promotion
 Require authentication level: `SECONDARY_STAFF`
 
 Arguments:
+
 - `String token` token of current session, used for authentication
-- `String promotionId` id of the promotion
+- `Long pid` ID of the promotion
 
 Returns:
 
@@ -192,7 +193,7 @@ Returns:
 
 Example:
 
-> Input: `http://SERVER/promotion/approve/secondary?token=testToken&id=0`
+> Input: `http://SERVER/promotion/approve/secondary?token=testToken&pid=0`
 >
 > Returns: `true`
 
@@ -205,10 +206,11 @@ Add coupon(s) to a promotion
 Require authentication level: `STAFF`
 
 Arguments:
+
 - `String token` token of current session, used for authentication
 - `String name` name of the coupon
 - `Double value` value of the coupon
-- `String promotionId` ID of a promotion the coupons belong to
+- `Long pid` ID of a promotion the coupons belong to
 - `Date start` start-point of the available duration
 - `Date end` end-point of the available duration
 - `Integer count` count of the coupons
@@ -219,7 +221,7 @@ Returns:
 
 Example:
 
-> Input: `http://SERVER/coupon/add?token=testToken&name=test&value=10.0&promotionId=testA&start=2023-11-1&end=2023-11-11&count=100`
+> Input: `http://SERVER/coupon/add?token=EXAMPLE_TOKEN&name=test&value=10.0&pid=testA&start=2023-11-1&end=2023-11-11&count=100`
 >
 > Returns: `true`
 
@@ -234,7 +236,8 @@ Get coupon(s) from a promotion
 Require authentication level: `COMMON`
 
 Arguments:
-- `String promotionId` ID of a promotion the coupons belong to
+
+- `Long pid` ID of a promotion the coupons belong to
 - `String name` name of the coupon
 - `Integer count` count of the coupons
 
@@ -246,7 +249,7 @@ Example:
 
 > Input: `http://SERVER/coupon/get?promotionId=testA&name=test&count=2`
 > 
-> Returns: `[{"cid":"0","name":"test","promotion":"testA","value":10.0,"start":"2023-11-1","end":"2023-11-11","used":false},{"cid":"1","name":"test","promotion":"testA","value":10.0,"start":"2023-11-1","end":"2023-11-11","used":false}]`
+> Returns: `[{"cid":"0","cName":"test","pid":0,"value":10.0,"start":"2023-11-1","end":"2023-11-11","used":false},{"cid":"1","cName":"test","pid":0,"value":10.0,"start":"2023-11-1","end":"2023-11-11","used":false}]`
 
 ---
 
@@ -257,8 +260,9 @@ User login, used for authentication
 Require authentication level: `COMMON`
 
 Arguments:
-- `uid` user ID
-- `pwd` password
+
+- `Long uid` user ID
+- `String pwd` password
 
 Returns:
 
@@ -266,8 +270,29 @@ Returns:
 
 Example:
 
-> Input: `http://SERVER/user/login?uid=test_staff&pwd=password`
+> Input: `http://SERVER/user/login?uid=0&pwd=password`
 > 
-> Returns: `TEST_TOKEN`
+> Returns: `EXAMPLE_TOKEN`
+
+---
+
+#### /user/query <span id="user_query"><span/>
+
+Query user, with password hidden
+
+Require authentication level: `COMMON`
+
+Arguments:
+
+- `Long uid` user ID
+
+Returns:
+
+`User user` null if user not found
+
+Example:
+> Input: `http://SERVER/user/query?uid=0`
+> 
+> Returns: `{"uid":0,"uName":test_staff,"auth":1}`
 
 ---

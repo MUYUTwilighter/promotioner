@@ -12,41 +12,44 @@ import java.util.List;
 public class Promotion {
     @Id
     @Column
-    private String pid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pid;
     @Column
-    private String name;
+    private String promotionName;
     @Column
     private Integer category;
     @Column
     private String business;
     @ManyToOne
-    @JoinColumn(name = "uid")
+    @JoinColumn(name = "creator", referencedColumnName = "uid")
     private User creator;
     @Column
-    private Date start;
+    private Date startDate;
     @Column
-    private Date end;
-    @Column
-    private String primaryApprover;
-    @Column
-    private String secondaryApprover;
+    private Date endDate;
+    @ManyToOne
+    @JoinColumn(name = "primary_approver", referencedColumnName = "uid")
+    private User primaryApprover;
+    @ManyToOne
+    @JoinColumn(name = "secondary_approver", referencedColumnName = "uid")
+    private User secondaryApprover;
     @OneToMany(mappedBy = "promotion")
     private List<Coupon> couponList;
 
-    public String getPid() {
+    public Long getPid() {
         return pid;
     }
 
-    public void setPid(String id) {
+    public void setPid(Long id) {
         this.pid = id;
     }
 
-    public String getName() {
-        return name;
+    public String getPromotionName() {
+        return promotionName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPromotionName(String promotionName) {
+        this.promotionName = promotionName;
     }
 
     public Integer getCategory() {
@@ -65,43 +68,43 @@ public class Promotion {
         this.business = business;
     }
 
-    public String getCreator() {
-        return creator.getUid();
+    public User getCreator() {
+        return creator;
     }
 
-    public void setCreator(String creator) {
-        this.creator.setUid(creator);
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
-    public Date getStart() {
-        return start;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStart(Date start) {
-        this.start = start;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getEnd() {
-        return end;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setEnd(Date end) {
-        this.end = end;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
-    public String getPrimaryApprover() {
+    public User getPrimaryApprover() {
         return primaryApprover;
     }
 
-    public void setPrimaryApprover(String primaryApprover) {
+    public void setPrimaryApprover(User primaryApprover) {
         this.primaryApprover = primaryApprover;
     }
 
-    public String getSecondaryApprover() {
+    public User getSecondaryApprover() {
         return secondaryApprover;
     }
 
-    public void setSecondaryApprover(String secondaryApprover) {
+    public void setSecondaryApprover(User secondaryApprover) {
         this.secondaryApprover = secondaryApprover;
     }
 }

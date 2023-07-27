@@ -8,7 +8,7 @@ spring:
     password: "promotion"
   jpa:
     database: "MySQL"
-    database-platform: "org.hibernate.dialect.MySQLDialect"
+    database-platform: "org.hibernate.dialect.MySQL5Dialect"
     show-sql: true
     hibernate:
       ddl-auto: "update"

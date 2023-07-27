@@ -1,6 +1,7 @@
 package cool.muyucloud.promotioner.service;
 
 import cool.muyucloud.promotioner.entity.Promotion;
+import cool.muyucloud.promotioner.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -11,12 +12,12 @@ import java.util.List;
  */
 @Service
 public interface PromotionService {
-    List<Promotion> vagueSearch(String name, Integer category, String creator, Date start, Date end);
+    List<Promotion> vagueSearch(String promotionName, Integer category, String creator, Date start, Date end);
 
-    Promotion queryById(String id);
+    Promotion queryById(Long id);
 
     boolean createPromotion(
-        String creator,
+        Long creator,
         String name,
         Integer category,
         String business,
@@ -24,7 +25,7 @@ public interface PromotionService {
         Date end
     );
 
-    boolean primaryApprove(String id, String approver);
+    boolean primaryApprove(Long id, User approver);
 
-    boolean secondaryApprove(String id, String approver);
+    boolean secondaryApprove(Long id, User approver);
 }

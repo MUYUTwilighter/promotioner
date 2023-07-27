@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface UserService {
-    boolean login(String id, String pwd);
+    boolean login(Long id, String pwd);
 
-    User query(String id);
+    User query(Long id);
 }

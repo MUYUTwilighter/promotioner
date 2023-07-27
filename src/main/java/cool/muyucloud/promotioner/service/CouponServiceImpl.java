@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +23,13 @@ public class CouponServiceImpl implements CouponService {
     private CouponDao couponDao;
 
     @Override
-    public void add(String name, Double value, String promotionId, Date start, Date end) {
-        if (ObjectUtil.anyNull(name, value, promotionId, start, end)) {
+    public void add(String couponName, Double value, Long pid, Date start, Date end) {
+        if (ObjectUtil.anyNull(couponName, value, pid, start, end)) {
             return;
         }
-        if (validatePromotion(promotionId, start, end)) {
+        if (validatePromotion(pid, start, end)) {
             Coupon coupon = new Coupon();
-            coupon.setName(name);
+            coupon.setCouponName(couponName);
             coupon.setValue(value);
             coupon.setStart(start);
             coupon.setEnd(end);
@@ -40,7 +39,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public boolean use(String id) {
+    public boolean use(Long id) {
         Optional<Coupon> optionalCoupon = couponDao.findById(id);
         if (!optionalCoupon.isPresent()) {
             return false;
@@ -56,8 +55,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<Coupon> get(String promotionId, String name, int count) {
-        List<Coupon> coupons = couponDao.get(promotionId, name, count);
+    public List<Coupon> get(Long pid, String name, int count) {
+        List<Coupon> coupons = couponDao.get(pid, name, count);
         if (coupons.size() != count) {
             return null;
         } else {
@@ -65,12 +64,12 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
-    private boolean validatePromotion(String promotionId, Date start, Date end) {
+    private boolean validatePromotion(Long promotionId, Date start, Date end) {
         Optional<Promotion> optionalPromotion = promotionDao.findById(promotionId);
         if (!optionalPromotion.isPresent()) {
             return false;
         }
         Promotion promotion = optionalPromotion.get();
-        return promotion.getStart().after(start) && promotion.getEnd().before(end) && promotion.getSecondaryApprover() != null;
+        return promotion.getStartDate().after(start) && promotion.getEndDate().before(end) && promotion.getSecondaryApprover() != null;
     }
 }

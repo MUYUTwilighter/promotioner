@@ -11,11 +11,12 @@ import java.sql.Date;
 public class Coupon {
     @Id
     @Column
-    private String cid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long cid;
     @Column
-    private String name;
+    private String couponName;
     @ManyToOne
-    @JoinColumn(name = "pid")
+    @JoinColumn(name = "promotion", referencedColumnName = "pid")
     private Promotion promotion;
     @Column
     private Double value;
@@ -26,20 +27,20 @@ public class Coupon {
     @Column
     private Boolean used;
 
-    public String getCid() {
+    public Long getCid() {
         return cid;
     }
 
-    public void setCid(String id) {
+    public void setCid(Long id) {
         this.cid = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCouponName() {
+        return couponName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCouponName(String couponName) {
+        this.couponName = couponName;
     }
 
     public Promotion getPromotion() {
@@ -80,5 +81,8 @@ public class Coupon {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public static class generator {
     }
 }

@@ -9,8 +9,8 @@ import java.util.List;
 /**
  * @author MUYU_Twilighter
  */
-public interface CouponDao extends JpaRepository<Coupon, String> {
+public interface CouponDao extends JpaRepository<Coupon, Long> {
     @Query(nativeQuery = true,
-        value = "select * from coupon where promotion = ?1 and name = ?2 limit ?3")
-    List<Coupon> get(String pid, String name, int count);
+        value = "select * from coupon where promotion = ?1 and couponName = ?2 limit ?3")
+    List<Coupon> get(Long pid, String name, int count);
 }

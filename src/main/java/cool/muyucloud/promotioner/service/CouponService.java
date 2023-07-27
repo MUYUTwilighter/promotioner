@@ -11,9 +11,9 @@ import java.util.List;
  */
 @Service
 public interface CouponService {
-    void add(String name, Double value, String promotionId, Date start, Date end);
+    void add(String couponName, Double value, Long pid, Date start, Date end);
 
-    boolean use(String id);
+    boolean use(Long id);
 
-    List<Coupon> get(String promotionId, String name, int count);
+    List<Coupon> get(Long pid, String name, int count);
 }

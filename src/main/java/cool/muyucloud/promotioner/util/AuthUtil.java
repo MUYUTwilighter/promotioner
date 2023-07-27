@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.security.SecureRandom;
 import java.util.Date;
 
@@ -12,12 +13,12 @@ import java.util.Date;
  * @author MUYU_Twilighter
  */
 @Component
-public class AuthoriseUtil {
+public class AuthUtil {
     public static final int EXPIRE = 600;
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    @Resource
+    private RedisTemplate<String, Long> redisTemplate;
 
     public boolean expire(String token, long time) {
         long expire = new Date().getTime();
@@ -26,14 +27,14 @@ public class AuthoriseUtil {
         return Boolean.TRUE.equals(redisTemplate.expireAt(token, dateExpire));
     }
 
-    public String put(String id) {
+    public String put(Long id) {
         String token = RandomString.make(16);
         redisTemplate.opsForValue().set(token, id);
         this.expire(token, EXPIRE);
         return token;
     }
 
-    public String get(String token) {
+    public Long get(String token) {
         this.expire(token, EXPIRE);
         return redisTemplate.opsForValue().get(token);
     }

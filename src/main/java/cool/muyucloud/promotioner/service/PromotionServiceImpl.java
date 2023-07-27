@@ -1,7 +1,9 @@
 package cool.muyucloud.promotioner.service;
 
 import cool.muyucloud.promotioner.dao.PromotionDao;
+import cool.muyucloud.promotioner.dao.UserDao;
 import cool.muyucloud.promotioner.entity.Promotion;
+import cool.muyucloud.promotioner.entity.User;
 import cool.muyucloud.promotioner.util.ObjectUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,20 +18,22 @@ import java.util.List;
 public class PromotionServiceImpl implements PromotionService {
     @Autowired
     private PromotionDao promotionDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
-    public List<Promotion> vagueSearch(String name, Integer category, String creator, Date start, Date end) {
-        return promotionDao.vagueSearch(name, category, creator, start, end);
+    public List<Promotion> vagueSearch(String promotionName, Integer category, String creator, Date start, Date end) {
+        return promotionDao.vagueSearch(promotionName, category, creator, start, end);
     }
 
     @Override
-    public Promotion queryById(String id) {
+    public Promotion queryById(Long id) {
         return promotionDao.findById(id).orElse(null);
     }
 
     @Override
     public boolean createPromotion(
-        String creator,
+        Long creator,
         String name,
         Integer category,
         String business,
@@ -39,19 +43,20 @@ public class PromotionServiceImpl implements PromotionService {
         if (ObjectUtil.anyNull(creator, name, category, business, start, end)) {
             return false;
         }
+        User creatorUser = userDao.getReferenceById(creator);
         Promotion promotion = new Promotion();
-        promotion.setName(name);
+        promotion.setPromotionName(name);
         promotion.setCategory(category);
         promotion.setBusiness(business);
-        promotion.setCreator(creator);
-        promotion.setStart(start);
-        promotion.setEnd(end);
+        promotion.setCreator(creatorUser);
+        promotion.setStartDate(start);
+        promotion.setEndDate(end);
         promotionDao.save(promotion);
         return true;
     }
 
     @Override
-    public boolean primaryApprove(String id, String approver) {
+    public boolean primaryApprove(Long id, User approver) {
         Promotion promotion = promotionDao.getReferenceById(id);
         if (promotion.getPrimaryApprover() == null) {
             promotion.setPrimaryApprover(approver);
@@ -63,7 +68,7 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
-    public boolean secondaryApprove(String id, String approver) {
+    public boolean secondaryApprove(Long id, User approver) {
         Promotion promotion = promotionDao.getReferenceById(id);
         if (promotion.getPrimaryApprover() != null &&
             promotion.getSecondaryApprover() == null) {

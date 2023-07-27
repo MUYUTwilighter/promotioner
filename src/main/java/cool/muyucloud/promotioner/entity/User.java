@@ -17,21 +17,26 @@ public class User {
 
     @Id
     @Column
-    private String uid;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long uid;
     @Column
-    private String name;
+    private String userName;
     @Column
     private String pwd;
     @Column
     private Integer auth;
     @OneToMany(mappedBy = "creator")
     private List<Promotion> promotions;
+    @OneToMany(mappedBy = "primaryApprover")
+    private List<Promotion> promotionsPrimary;
+    @OneToMany(mappedBy = "secondaryApprover")
+    private List<Promotion> promotionsSecondary;
 
-    public String getUid() {
+    public Long getUid() {
         return uid;
     }
 
-    public void setUid(String id) {
+    public void setUid(Long id) {
         this.uid = id;
     }
 
@@ -67,11 +72,11 @@ public class User {
         return (this.auth & DATABASE_ADMIN) != 0;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
