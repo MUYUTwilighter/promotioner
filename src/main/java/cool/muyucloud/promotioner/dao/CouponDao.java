@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface CouponDao extends JpaRepository<Coupon, String> {
     @Query(nativeQuery = true,
-        value = "select * from coupon where promotion = ?1 limit ?2")
-    List<Coupon> get(String promotionId, int count);
+        value = "select * from coupon where promotion = ?1 and name = ?2 limit ?3")
+    List<Coupon> get(String pid, String name, int count);
 }

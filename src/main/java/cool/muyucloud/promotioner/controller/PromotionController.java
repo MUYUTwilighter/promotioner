@@ -34,11 +34,11 @@ public class PromotionController {
     @GetMapping("/search/vague")
     @ResponseBody
     public List<Promotion> vagueSearch(
-        @RequestParam(value = "name") String name,
-        @RequestParam(value = "category") Integer category,
-        @RequestParam(value = "creator") String creator,
-        @RequestParam(value = "start") Date start,
-        @RequestParam(value = "end") Date end) {
+        @RequestParam(value = "name", required = false) String name,
+        @RequestParam(value = "category", required = false) Integer category,
+        @RequestParam(value = "creator", required = false) String creator,
+        @RequestParam(value = "start", required = false) Date start,
+        @RequestParam(value = "end", required = false) Date end) {
         return promotionService.vagueSearch(name, category, creator, start, end);
     }
 
@@ -65,8 +65,7 @@ public class PromotionController {
     @PutMapping("/approve/primary")
     public Boolean primaryApprove(
         @RequestParam(value = "token") String token,
-        @RequestParam(value = "id") String promotionId,
-        @RequestParam(value = "approver") String approver) {
+        @RequestParam(value = "promotionId") String promotionId) {
         if (!authoriseUtil.exists(token)) {
             return false;
         }
@@ -75,22 +74,21 @@ public class PromotionController {
         if (!user.isPrimaryStaff()) {
             return false;
         }
-        return promotionService.primaryApprove(promotionId, approver);
+        return promotionService.primaryApprove(promotionId, user.getUid());
     }
 
     @PutMapping("/approve/secondary")
     public Boolean secondaryApprove(
         @RequestParam(value = "token") String token,
-        @RequestParam(value = "id") String id,
-        @RequestParam(value = "approver") String approver) {
+        @RequestParam(value = "promotionId") String id) {
         if (!authoriseUtil.exists(token)) {
             return false;
         }
         String uid = authoriseUtil.get(token);
         User user = userService.query(uid);
-        if (!user.isPrimaryStaff()) {
+        if (!user.isSecondaryStaff()) {
             return false;
         }
-        return promotionService.secondaryApprove(id, approver);
+        return promotionService.secondaryApprove(id, user.getUid());
     }
 }

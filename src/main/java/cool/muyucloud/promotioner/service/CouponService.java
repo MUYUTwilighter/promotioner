@@ -15,5 +15,5 @@ public interface CouponService {
 
     boolean use(String id);
 
-    List<Coupon> get(String promotionId, int count);
+    List<Coupon> get(String promotionId, String name, int count);
 }

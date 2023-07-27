@@ -11,11 +11,11 @@ import java.sql.Date;
 public class Coupon {
     @Id
     @Column
-    private String id;
+    private String cid;
     @Column
     private String name;
     @ManyToOne
-    @JoinColumn(name = "promotion")
+    @JoinColumn(name = "pid")
     private Promotion promotion;
     @Column
     private Double value;
@@ -26,12 +26,12 @@ public class Coupon {
     @Column
     private Boolean used;
 
-    public String getId() {
-        return id;
+    public String getCid() {
+        return cid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCid(String id) {
+        this.cid = id;
     }
 
     public String getName() {

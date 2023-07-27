@@ -37,7 +37,7 @@ public class CouponController {
         @RequestParam(value = "token") String token,
         @RequestParam(value = "name") String name,
         @RequestParam(value = "value") Double value,
-        @RequestParam(value = "promotion") String promotionId,
+        @RequestParam(value = "promotionId") String promotionId,
         @RequestParam(value = "start") Date start,
         @RequestParam(value = "end") Date end,
         @RequestParam(value = "count", defaultValue = "1") Integer count) {
@@ -50,7 +50,7 @@ public class CouponController {
         if (promotion == null) {
             return false;
         }
-        if (promotion.getCreator().equals(user.getId())) {
+        if (promotion.getCreator().equals(user.getUid())) {
             return false;
         }
         if (count <= 0) {
@@ -64,12 +64,13 @@ public class CouponController {
 
     @GetMapping("/get")
     public List<Coupon> getCoupon(
-        @RequestParam(value = "promotion") String promotion,
+        @RequestParam(value = "promotionId") String promotion,
+        @RequestParam(value = "name") String name,
         @RequestParam(value = "count", defaultValue = "1") Integer count) {
         if (count <= 0) {
             return null;
         } else {
-            return couponService.get(promotion, count);
+            return couponService.get(promotion, name, count);
         }
     }
 }

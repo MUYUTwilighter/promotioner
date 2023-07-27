@@ -1,9 +1,7 @@
 package cool.muyucloud.promotioner.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author MUYU_Twilighter
@@ -19,18 +17,22 @@ public class User {
 
     @Id
     @Column
-    private String id;
+    private String uid;
+    @Column
+    private String name;
     @Column
     private String pwd;
     @Column
     private Integer auth;
+    @OneToMany(mappedBy = "creator")
+    private List<Promotion> promotions;
 
-    public String getId() {
-        return id;
+    public String getUid() {
+        return uid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUid(String id) {
+        this.uid = id;
     }
 
     public String getPwd() {
@@ -61,7 +63,15 @@ public class User {
         return (this.auth & PRIMARY_STAFF) != 0;
     }
 
-    public boolean isAdmin() {
+    public boolean isDataBaseAdmin() {
         return (this.auth & DATABASE_ADMIN) != 0;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

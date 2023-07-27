@@ -56,8 +56,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<Coupon> get(String promotionId, int count) {
-        List<Coupon> coupons = couponDao.get(promotionId, count);
+    public List<Coupon> get(String promotionId, String name, int count) {
+        List<Coupon> coupons = couponDao.get(promotionId, name, count);
         if (coupons.size() != count) {
             return null;
         } else {

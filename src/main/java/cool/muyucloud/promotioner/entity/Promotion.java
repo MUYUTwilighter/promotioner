@@ -12,7 +12,7 @@ import java.util.List;
 public class Promotion {
     @Id
     @Column
-    private String id;
+    private String pid;
     @Column
     private String name;
     @Column
@@ -20,7 +20,7 @@ public class Promotion {
     @Column
     private String business;
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "uid")
     private User creator;
     @Column
     private Date start;
@@ -33,12 +33,12 @@ public class Promotion {
     @OneToMany(mappedBy = "promotion")
     private List<Coupon> couponList;
 
-    public String getId() {
-        return id;
+    public String getPid() {
+        return pid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPid(String id) {
+        this.pid = id;
     }
 
     public String getName() {
@@ -66,11 +66,11 @@ public class Promotion {
     }
 
     public String getCreator() {
-        return creator.getId();
+        return creator.getUid();
     }
 
     public void setCreator(String creator) {
-        this.creator.setId(creator);
+        this.creator.setUid(creator);
     }
 
     public Date getStart() {
