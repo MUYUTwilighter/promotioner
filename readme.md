@@ -78,6 +78,8 @@ Columns:
 
 Search a specific promotion via promotion's id, return null if not found
 
+Type: `HTTP GET`
+
 Require authentication level: `ANY`
 
 Arguments:
@@ -92,13 +94,15 @@ Example:
 
 > Input: `http://SERVER/promotion/search/id?id="0"`
 >
-> Returns: ```{"pid":0,"pName":"testA","category":0,"business":"test","uid":0,"startDate":"2022-1-1","endDate":"2023-1-1","primaryApprover":0,"secondaryApprover":0}```
+> Returns: ```{"pid":0,"promotionName":"testA","category":0,"business":"test","uid":0,"startDate":"2022-1-1","endDate":"2023-1-1","primaryApprover":0,"secondaryApprover":0}```
 
 ---
 
 #### promotion/search/vague
 
 Search a list of promotions via their details, return a list
+
+Type: `HTTP GET`
 
 Require authentication level: `ANY`
 
@@ -130,6 +134,8 @@ Example:
 
 Create a promotion with necessary information
 
+Type: `HTTP POST`
+
 Require authentication level: `STAFF`
 
 Arguments:
@@ -157,6 +163,8 @@ Example:
 
 Primary approval of a promotion
 
+Type: `HTTP PUT`
+
 Require authentication level: `PRIMARY_STAFF`
 
 Arguments:
@@ -180,6 +188,8 @@ Example:
 
 Secondary approval of a promotion
 
+Type: `HTTP PUT`
+
 Require authentication level: `SECONDARY_STAFF`
 
 Arguments:
@@ -202,6 +212,8 @@ Example:
 #### /coupon/add <span id="coupon_add"><span/>
 
 Add coupon(s) to a promotion
+
+Type: `HTTP POST`
 
 Require authentication level: `STAFF`
 
@@ -233,6 +245,8 @@ Example:
 
 Get coupon(s) from a promotion
 
+Type: `HTTP GET`
+
 Require authentication level: `COMMON`
 
 Arguments:
@@ -257,6 +271,8 @@ Example:
 
 User login, used for authentication
 
+Type: `HTTP GET`
+
 Require authentication level: `COMMON`
 
 Arguments:
@@ -279,6 +295,8 @@ Example:
 #### /user/query <span id="user_query"><span/>
 
 Query user, with password hidden
+
+Type: `HTTP GET`
 
 Require authentication level: `COMMON`
 
