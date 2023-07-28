@@ -1,5 +1,3 @@
-server:
-  port: 25565
 spring:
   datasource:
     url: "jdbc:mysql://localhost/promotion?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai"
