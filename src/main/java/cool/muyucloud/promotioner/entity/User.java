@@ -9,6 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 public class User {
+    public static final User EMPTY = new User();
+
     public static final int COMMON = 0;
     public static final int STAFF = 1;
     public static final int PRIMARY_STAFF = 1 << 1;
@@ -56,27 +58,35 @@ public class User {
         this.auth = auth;
     }
 
-    public boolean isStaff() {
-        return (this.auth & STAFF) != 0;
-    }
-
-    public boolean isSecondaryStaff() {
-        return (this.auth & SECONDARY_STAFF) != 0;
-    }
-
-    public boolean isPrimaryStaff() {
-        return (this.auth & PRIMARY_STAFF) != 0;
-    }
-
-    public boolean isDataBaseAdmin() {
-        return (this.auth & DATABASE_ADMIN) != 0;
-    }
-
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public User genHidden() {
+        User user = new User();
+        user.setUid(this.uid);
+        user.setUserName(this.userName);
+        user.setAuth(this.auth);
+        return user;
+    }
+
+    public static boolean isStaff(User user) {
+        return (user.auth & STAFF) != 0;
+    }
+
+    public static boolean isSecondaryStaff(User user) {
+        return (user.auth & SECONDARY_STAFF) != 0;
+    }
+
+    public static boolean isPrimaryStaff(User user) {
+        return (user.auth & PRIMARY_STAFF) != 0;
+    }
+
+    public static boolean isDataBaseAdmin(User user) {
+        return (user.auth & DATABASE_ADMIN) != 0;
     }
 }

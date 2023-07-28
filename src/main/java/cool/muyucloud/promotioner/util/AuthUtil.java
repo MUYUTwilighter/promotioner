@@ -1,5 +1,6 @@
 package cool.muyucloud.promotioner.util;
 
+import cool.muyucloud.promotioner.PromotionerApplication;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,7 +16,6 @@ import java.util.Date;
 @Component
 public class AuthUtil {
     public static final int EXPIRE = 600;
-    private static final SecureRandom RANDOM = new SecureRandom();
 
     @Resource
     private RedisTemplate<String, Long> redisTemplate;
@@ -30,8 +30,8 @@ public class AuthUtil {
     public String put(Long id) {
         String token = RandomString.make(16);
         redisTemplate.opsForValue().set(token, id);
-        this.expire(token, EXPIRE);
-        return token;
+        boolean result = this.expire(token, EXPIRE);
+        return result ? token : "[ERROR]";
     }
 
     public Long get(String token) {
@@ -41,17 +41,5 @@ public class AuthUtil {
 
     public boolean exists(String token) {
         return redisTemplate.opsForValue().get(token) != null;
-    }
-
-    private static String generateToken() {
-        long figure = RANDOM.nextLong();
-        String token = Long.toUnsignedString(figure, 16);
-        short len = (short) token.length();
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < (16 - len); ++i) {
-            builder.append(0);
-        }
-        builder.append(token);
-        return builder.toString();
     }
 }

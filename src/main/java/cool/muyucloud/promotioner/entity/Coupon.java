@@ -2,6 +2,8 @@ package cool.muyucloud.promotioner.entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author MUYU_Twilighter
@@ -9,6 +11,9 @@ import java.sql.Date;
 @Entity
 @Table(name = "coupon")
 public class Coupon {
+    public static final Coupon EMPTY = new Coupon();
+    public static final List<Coupon> EMPTY_LIST = new ArrayList<>();
+
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)

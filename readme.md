@@ -311,6 +311,6 @@ Returns:
 Example:
 > Input: `http://SERVER/user/query?uid=0`
 > 
-> Returns: `{"uid":0,"uName":test_staff,"auth":1}`
+> Returns: `{"uid":0,"userName":test_staff,"auth":1}`
 
 ---

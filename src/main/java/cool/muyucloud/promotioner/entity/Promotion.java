@@ -10,6 +10,8 @@ import java.util.List;
 @Entity
 @Table(name = "promotion")
 public class Promotion {
+    public static final Promotion EMPTY = new Promotion();
+
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,11 +1,11 @@
 package cool.muyucloud.promotioner.service;
 
+import cool.muyucloud.promotioner.PromotionerApplication;
 import cool.muyucloud.promotioner.dao.UserDao;
 import cool.muyucloud.promotioner.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,10 +31,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalUser = userDao.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setPwd(null);
-            return user;
+            return user.genHidden();
         } else {
-            return null;
+            return User.EMPTY;
         }
     }
 }

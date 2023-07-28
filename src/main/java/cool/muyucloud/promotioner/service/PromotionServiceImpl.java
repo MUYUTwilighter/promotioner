@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author MUYU_Twilighter
@@ -28,7 +29,7 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public Promotion queryById(Long id) {
-        return promotionDao.findById(id).orElse(null);
+        return promotionDao.findById(id).orElse(Promotion.EMPTY);
     }
 
     @Override
@@ -43,7 +44,11 @@ public class PromotionServiceImpl implements PromotionService {
         if (ObjectUtil.anyNull(creator, name, category, business, start, end)) {
             return false;
         }
-        User creatorUser = userDao.getReferenceById(creator);
+        Optional<User> optionalUser = userDao.findById(creator);
+        User creatorUser = optionalUser.orElse(null);
+        if (creatorUser == null) {
+            return false;
+        }
         Promotion promotion = new Promotion();
         promotion.setPromotionName(name);
         promotion.setCategory(category);

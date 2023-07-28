@@ -8,11 +8,7 @@ import cool.muyucloud.promotioner.service.PromotionService;
 import cool.muyucloud.promotioner.service.UserService;
 import cool.muyucloud.promotioner.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.List;
@@ -20,7 +16,7 @@ import java.util.List;
 /**
  * @author MUYU_Twilighter
  */
-@Controller
+@RestController
 @RequestMapping("/coupon")
 public class CouponController {
     @Autowired
@@ -33,7 +29,7 @@ public class CouponController {
     private AuthUtil authoriseUtil;
 
     @PostMapping("/add")
-    public Boolean addCoupon(
+    public Integer addCoupon(
         @RequestParam(value = "token") String token,
         @RequestParam(value = "name") String name,
         @RequestParam(value = "value") Double value,
@@ -41,25 +37,29 @@ public class CouponController {
         @RequestParam(value = "start") Date start,
         @RequestParam(value = "end") Date end,
         @RequestParam(value = "count", defaultValue = "1") Integer count) {
+        int success = 0;
         if (!authoriseUtil.exists(token)) {
-            return false;
+            return success;
         }
         Long uid = authoriseUtil.get(token);
         User user = userService.query(uid);
         Promotion promotion = promotionService.queryById(pid);
         if (promotion == null) {
-            return false;
+            return success;
         }
         if (promotion.getCreator().getUid().equals(user.getUid())) {
-            return false;
+            return success;
         }
         if (count <= 0) {
-            return false;
+            return success;
         }
         for (int i = 0; i < count; ++i) {
-            couponService.add(name, value, pid, start, end);
+            boolean result = couponService.add(name, value, pid, start, end);
+            if (result) {
+                ++success;
+            }
         }
-        return true;
+        return success;
     }
 
     @GetMapping("/get")
@@ -68,7 +68,7 @@ public class CouponController {
         @RequestParam(value = "name") String name,
         @RequestParam(value = "count", defaultValue = "1") Integer count) {
         if (count <= 0) {
-            return null;
+            return Coupon.EMPTY_LIST;
         } else {
             return couponService.get(pid, name, count);
         }

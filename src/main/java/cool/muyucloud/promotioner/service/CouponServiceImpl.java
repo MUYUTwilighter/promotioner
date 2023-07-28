@@ -23,19 +23,21 @@ public class CouponServiceImpl implements CouponService {
     private CouponDao couponDao;
 
     @Override
-    public void add(String couponName, Double value, Long pid, Date start, Date end) {
+    public boolean add(String couponName, Double value, Long pid, Date start, Date end) {
         if (ObjectUtil.anyNull(couponName, value, pid, start, end)) {
-            return;
+            return false;
         }
-        if (validatePromotion(pid, start, end)) {
-            Coupon coupon = new Coupon();
-            coupon.setCouponName(couponName);
-            coupon.setValue(value);
-            coupon.setStart(start);
-            coupon.setEnd(end);
-            coupon.setUsed(false);
-            couponDao.save(coupon);
+        if (!validatePromotion(pid, start, end)) {
+            return false;
         }
+        Coupon coupon = new Coupon();
+        coupon.setCouponName(couponName);
+        coupon.setValue(value);
+        coupon.setStart(start);
+        coupon.setEnd(end);
+        coupon.setUsed(false);
+        couponDao.save(coupon);
+        return true;
     }
 
     @Override

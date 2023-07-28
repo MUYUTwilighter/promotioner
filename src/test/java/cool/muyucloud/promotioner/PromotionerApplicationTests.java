@@ -9,5 +9,4 @@ class PromotionerApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

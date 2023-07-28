@@ -6,7 +6,6 @@ import cool.muyucloud.promotioner.service.PromotionService;
 import cool.muyucloud.promotioner.service.UserService;
 import cool.muyucloud.promotioner.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -15,7 +14,7 @@ import java.util.List;
 /**
  * @author MUYU_Twilighter
  */
-@Controller
+@RestController
 @RequestMapping("/promotion")
 public class PromotionController {
     @Autowired
@@ -26,13 +25,11 @@ public class PromotionController {
     private AuthUtil authoriseUtil;
 
     @GetMapping("/search/id")
-    @ResponseBody
     public Promotion searchId(@RequestParam(value = "id") Long id) {
         return promotionService.queryById(id);
     }
 
     @GetMapping("/search/vague")
-    @ResponseBody
     public List<Promotion> vagueSearch(
         @RequestParam(value = "name", required = false) String name,
         @RequestParam(value = "category", required = false) Integer category,
@@ -46,7 +43,7 @@ public class PromotionController {
     public Boolean createPromotion(
         @RequestParam(value = "token") String token,
         @RequestParam(value = "name") String name,
-        @RequestParam(value = "category") Integer category,
+        @RequestParam(value = "category", defaultValue = "0") Integer category,
         @RequestParam(value = "business") String business,
         @RequestParam(value = "start") Date start,
         @RequestParam(value = "end") Date end) {
@@ -55,7 +52,7 @@ public class PromotionController {
         }
         Long uid = authoriseUtil.get(token);
         User user = userService.query(uid);
-        if (!user.isStaff()) {
+        if (!User.isStaff(user)) {
             return false;
         }
         return promotionService.createPromotion(user.getUid(), name, category, business, start, end);
@@ -70,7 +67,7 @@ public class PromotionController {
         }
         Long uid = authoriseUtil.get(token);
         User user = userService.query(uid);
-        if (!user.isPrimaryStaff()) {
+        if (!User.isPrimaryStaff(user)) {
             return false;
         }
         return promotionService.primaryApprove(pid, user);
@@ -85,7 +82,7 @@ public class PromotionController {
         }
         Long uid = authoriseUtil.get(token);
         User user = userService.query(uid);
-        if (!user.isSecondaryStaff()) {
+        if (!User.isSecondaryStaff(user)) {
             return false;
         }
         return promotionService.secondaryApprove(pid, user);
