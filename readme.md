@@ -46,15 +46,15 @@ Columns:
 
 ---
 
-#### promotion.user
+#### promotion.user <span id = "table_user"></span>
 
-Users that may interact with promotion management, this table is used for authentication
+Users that may interact with promotion management, this table is used for [authentication](#auth)
 
 Columns:
 
 - `uid` User ID
 - `user_name` User name
-- `auth` Authentication level
+- `auth` Authentication level, see [User & authentication for detail](#auth)
 - `pwd` User's password
 
 ---
@@ -63,10 +63,30 @@ Columns:
 
 ### Post a promotion
 
+To post a promotion, you need 
+
 1. Submit necessary information about the promotion to post  [`/promotion/create`](#promotion_create)
 2. Waiting for primary approval [`/promotion/approve/primary`](#approve_primary)
 3. Waiting for secondary approval [`/promotion/approve/secondary`](#approve_secondary)
 4. When the approval complete, you can [post coupons](#coupon_add) for your promotion if the promotion begins
+
+### User & authentication <span id = "auth"><span/>
+
+Some of the methods require specific authentication level to use,
+here tells details about authentication procedures used by this project.
+
+#### Authentication level
+
+Authentication level is a integer value in data-table [promotion.user.auth](#table_user),
+which means any roles are stored in one integer, and is read as bit to identify a user's role
+
+The integer's bit sequence is following rules:
+
+- `user.auth & 0b00000001 != 0`: `STAFF`
+- `user.auth & 0b00000010 != 0`: `PRIMARY_STAFF`
+- `user.auth & 0b00000100 != 0`: `SECONDARY_STAFF`
+- `user.auth & 0b10000000 != 0`: `DATABASE_ADMIN`
+- `user.auth & 0xFFFFFFFF != 0`: `ROOT`
 
 ## Method List
 
@@ -229,13 +249,13 @@ Arguments:
 
 Returns:
 
-`Boolean result` Return `true` if successfully added
+`Integer success` count of coupons that is successfully added
 
 Example:
 
 > Input: `http://SERVER/coupon/add?token=EXAMPLE_TOKEN&name=test&value=10.0&pid=testA&start=2023-11-1&end=2023-11-11&count=100`
 >
-> Returns: `true`
+> Returns: `100`
 
 ### Other
 
@@ -247,7 +267,7 @@ Get coupon(s) from a promotion
 
 Type: `HTTP GET`
 
-Require authentication level: `COMMON`
+Require authentication level: `ANY`
 
 Arguments:
 
@@ -273,7 +293,7 @@ User login, used for authentication
 
 Type: `HTTP GET`
 
-Require authentication level: `COMMON`
+Require authentication level: `ANY`
 
 Arguments:
 
@@ -298,7 +318,7 @@ Query user, with password hidden
 
 Type: `HTTP GET`
 
-Require authentication level: `COMMON`
+Require authentication level: `ANY`
 
 Arguments:
 
@@ -312,5 +332,57 @@ Example:
 > Input: `http://SERVER/user/query?uid=0`
 > 
 > Returns: `{"uid":0,"userName":test_staff,"auth":1}`
+
+---
+
+#### /user/modify/auth
+
+Modify authentication level of a user
+
+Type: `HTTP PUT`
+
+Require authentication level: `ANY` (Higher than target user)
+
+Arguments:
+
+- `String token` token of current session, used for authentication
+- `Long uid` ID of target user
+- `Integer auth` authentication level to set
+
+Returns:
+
+`Boolean result` true if authentication successfully modified
+
+Example:
+
+> Input: `http://SERVER/user/modify/auth?token=EXAMPLE_TOKEN&uid=2&auth=2`
+> 
+> Returns: `true`
+
+---
+
+#### /user/modify/property
+
+Modify properties (except authentication level) of current communicating user
+
+Type: `HTTP PUT`
+
+Require authentication level: `ANY`
+
+Arguments:
+
+- `String token` token of current session, used for authentication
+- `Long name` name to set
+- `String pwd` password to set
+
+Returns:
+
+`Boolean result` true if properties successfully modified
+
+Example:
+
+> Input: `http://SERVER/user/modify/property?token=EXAMPLE_TOKEN&name=test_secondary&pwd=password`
+>
+> Returns: `true`
 
 ---

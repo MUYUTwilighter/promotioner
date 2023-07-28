@@ -1,8 +1,8 @@
 package cool.muyucloud.promotioner.service;
 
-import cool.muyucloud.promotioner.PromotionerApplication;
 import cool.muyucloud.promotioner.dao.UserDao;
 import cool.muyucloud.promotioner.entity.User;
+import cool.muyucloud.promotioner.util.ObjectUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +35,35 @@ public class UserServiceImpl implements UserService {
         } else {
             return User.EMPTY;
         }
+    }
+
+    @Override
+    public boolean register(String name, String pwd, Integer auth) {
+        if (ObjectUtil.anyNull(name, pwd, auth)) {
+            return false;
+        }
+        User user = new User();
+        user.setUserName(name);
+        user.setPwd(pwd);
+        user.setAuth(auth);
+        userDao.save(user);
+        return true;
+    }
+
+    @Override
+    public boolean modify(Long uid, String name, String pwd, Integer auth) {
+        if (ObjectUtil.anyNull(name, pwd, auth)) {
+            return false;
+        }
+        Optional<User> optionalUser = userDao.findById(uid);
+        if (!optionalUser.isPresent()) {
+            return false;
+        }
+        User user = optionalUser.get();
+        user.setUserName(name);
+        user.setPwd(pwd);
+        user.setAuth(auth);
+        userDao.save(user);
+        return true;
     }
 }

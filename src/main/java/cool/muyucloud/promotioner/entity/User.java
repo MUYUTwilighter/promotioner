@@ -12,10 +12,11 @@ public class User {
     public static final User EMPTY = new User();
 
     public static final int COMMON = 0;
-    public static final int STAFF = 1;
-    public static final int PRIMARY_STAFF = 1 << 1;
-    public static final int SECONDARY_STAFF = 1 << 2;
-    public static final int DATABASE_ADMIN = 1 << 7;
+    public static final int STAFF = 0b00000001;
+    public static final int PRIMARY_STAFF = 0b00000010;
+    public static final int SECONDARY_STAFF = 0b00000100;
+    public static final int DATABASE_ADMIN = 0b10000000;
+    public static final int ROOT = 0x0FFFFFFF;
 
     @Id
     @Column
@@ -88,5 +89,9 @@ public class User {
 
     public static boolean isDataBaseAdmin(User user) {
         return (user.auth & DATABASE_ADMIN) != 0;
+    }
+
+    public static boolean isRoot(User user) {
+        return (user.auth & ROOT) != 0;
     }
 }
