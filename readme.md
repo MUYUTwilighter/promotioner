@@ -10,8 +10,6 @@ Database Name: promotion
 
 ### Tables
 
----
-
 #### promotion.promotion
 
 All the promotion with their status and properties.
@@ -75,8 +73,6 @@ To post a promotion, you need
 Some of the methods require specific authentication level to use,
 here tells details about authentication procedures used by this project.
 
-#### Authentication level
-
 Authentication level is a integer value in data-table [promotion.user.auth](#table_user),
 which means any roles are stored in one integer, and is read as bit to identify a user's role
 
@@ -86,13 +82,14 @@ The integer's bit sequence is following rules:
 - `user.auth & 0b00000010 != 0`: `PRIMARY_STAFF`
 - `user.auth & 0b00000100 != 0`: `SECONDARY_STAFF`
 - `user.auth & 0b10000000 != 0`: `DATABASE_ADMIN`
-- `user.auth & 0xFFFFFFFF != 0`: `ROOT`
+- `user.auth & 0x0FFFFFFF != 0`: `ROOT`
+
+For example, to register a user with authority `PRIMARY_STAFF` and `STAFF`,
+you can use method [/user/register](#user_register)
 
 ## Method List
 
 ### Search
-
----
 
 #### promotion/search/id
 
@@ -147,8 +144,6 @@ Example:
 ---
 
 ### Promotion management
-
----
 
 #### /promotion/create <span id="promotion_create"><span/>
 
@@ -259,8 +254,6 @@ Example:
 
 ### Other
 
----
-
 #### /coupon/get <span id="coupon_get"><span/>
 
 Get coupon(s) from a promotion
@@ -332,6 +325,33 @@ Example:
 > Input: `http://SERVER/user/query?uid=0`
 > 
 > Returns: `{"uid":0,"userName":test_staff,"auth":1}`
+
+---
+
+#### /user/register <span id = "user_register"><span/>
+
+Register a user
+
+Type: `HTTP POST`
+
+Require authentication level: `DATABASE_ADMIN` (Higher than the user to register)
+
+Arguments:
+
+- `String token` token of current session, used for authentication
+- `String name` name of the user
+- `String pwd` password of the user
+- `Integer auth` authentication level of the user
+
+Returns:
+
+`Long id` ID of registered user, return 0 if failed
+
+Example:
+
+> Input: `http://SERVER/user/modify/auth?token=EXAMPLE_TOKEN&name=test_common&pwd=password&auth=0`
+>
+> Returns: `4`
 
 ---
 

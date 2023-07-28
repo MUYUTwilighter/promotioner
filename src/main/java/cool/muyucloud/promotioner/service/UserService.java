@@ -36,7 +36,7 @@ public interface UserService {
      *
      * @return true if successfully registered
      * */
-    boolean register(String name, String pwd, Integer auth);
+    Long register(String name, String pwd, Integer auth);
 
     /**
      * Modify properties of a user

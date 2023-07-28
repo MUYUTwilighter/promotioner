@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Boolean register(
+    public Long register(
         @RequestParam("token") String token,
         @RequestParam("name") String name,
         @RequestParam("pwd") String pwd,
@@ -44,15 +44,14 @@ public class UserController {
             Long uid = authUtil.get(token);
             User user = query(uid);
             if (!User.isDataBaseAdmin(user)) {
-                return false;
+                return 0L;
             }
             if ((~user.getAuth() & auth) != 0) {
-                return false;
+                return 0L;
             }
-            userService.register(name, pwd, auth);
-            return true;
+            return userService.register(name, pwd, auth);
         } else {
-            return false;
+            return 0L;
         }
     }
 

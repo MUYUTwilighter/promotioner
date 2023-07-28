@@ -38,16 +38,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean register(String name, String pwd, Integer auth) {
+    public Long register(String name, String pwd, Integer auth) {
         if (ObjectUtil.anyNull(name, pwd, auth)) {
-            return false;
+            return 0L;
         }
         User user = new User();
         user.setUserName(name);
         user.setPwd(pwd);
         user.setAuth(auth);
         userDao.save(user);
-        return true;
+        return user.getUid();
     }
 
     @Override
