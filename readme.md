@@ -85,7 +85,7 @@ The integer's bit sequence is following rules:
 - `user.auth & 0x0FFFFFFF != 0`: `ROOT`
 
 For example, to register a user with authority `PRIMARY_STAFF` and `STAFF`,
-you can use method [/user/register](#user_register)
+you can use method [/user/register](#user_register) with argument auth set to `PRIMARY_STAFF | STAFF`
 
 ## Method List
 
